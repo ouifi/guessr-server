@@ -3,6 +3,10 @@
   - [Environment](#environment)
   - [Running](#running)
 
+<p align="center">
+    <img id="image" src="./logo.png" width="20%">
+</p>
+
 # Intro
 The api server for Guessr.io
 
