@@ -1,5 +1,6 @@
 const fastify = require("fastify");
 const fastifyHelmet = require("fastify-helmet");
+const fastifyCORS = require("fastify-cors");
 
 const Reddit = require("./lib/reddit");
 const { Logger, LOG_LEVELS } = require("./lib/log");
@@ -32,6 +33,9 @@ if (process.env.NODE_ENV !== "production") {
     Server.register(api, { prefix: "/api" });
 } else {
     Server.register(api);
+    Server.register(fastifyCORS, {
+        origin: true
+    });
 }
 
 Reddit.initialize(
