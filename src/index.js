@@ -38,13 +38,6 @@ if (process.env.NODE_ENV !== "production") {
     });
 }
 
-Reddit.initialize(
-    // process.env.REDDIT_USERNAME,
-    // process.env.REDDIT_PASSWORD,
-    process.env.REDDIT_CLIENT_ID,
-    process.env.REDDIT_CLIENT_SECRET
-);
-
 Reddit.connect().then(() => {
     Server.listen(process.env.PORT || 9999, "0.0.0.0", function (err, address) {
         if (err) {

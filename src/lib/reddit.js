@@ -4,22 +4,14 @@ const url = require("url");
 const { Logger } = require("../lib/log");
 
 const creds = {
-    username: null, 
-    password: null, 
-    id: null, 
-    secret: null
-}
+    id: process.env.REDDIT_CLIENT_ID, 
+    secret: process.env.REDDIT_CLIENT_SECRET
+};
 
 let auth = null;
-
 let user_agent = `node.js:guessr.io:v1.0.0 (by u/${process.env.REDDIT_USERNAME})`;
 
 class RedditClient {
-
-    static initialize(id, secret) {
-        creds.id = id;
-        creds.secret = secret;
-    }
 
     static async connect() {
         return axios.request({
@@ -37,19 +29,24 @@ class RedditClient {
                 if (response.status === 200) {
                     auth = response.data;
                     return response.data;
+                } else {
+                    throw new Error(response.message);
                 }
             }
         ).catch(
             (err) => {
                 Logger.error(err.message);
             }
-        )
+        );
     }
 
     static async getRandomSubreddit() {
         return axios.request({
             method: "POST",
             url: "https://www.reddit.com/r/random/top/.json?t=week",
+            headers: {
+                "User-Agent": user_agent
+            }
         })
         .then(
             (response) => {
@@ -61,7 +58,7 @@ class RedditClient {
             (err) => {
                 Logger.error(err.message);
             }
-        )
+        );
     }
 
     static async getRandomSubredditWithAuth() {
@@ -88,10 +85,11 @@ class RedditClient {
                         );
                     if (clean_headers["x-ratelimit-used"]) {
                         Logger.warn("Reddit API is warning of usage for /u/" + process.env.REDDIT_USERNAME);
-                        if (clean_headers["x-ratelimit-remaining"] < 20) {
-                            Logger.error("< 20 requests remaining for /u/" + process.env.REDDIT_USERNAME);
-                        }
-                    } 
+                    }
+
+                    if (clean_headers["x-ratelimit-remaining"] < 20) {
+                        Logger.error("< 20 requests remaining for /u/" + process.env.REDDIT_USERNAME);
+                    }
                     return response.data;
                 }
             }
@@ -100,7 +98,7 @@ class RedditClient {
             (err) => {
                 Logger.error(err);
             }
-        )
+        );
     }
 
     static async requestWithAuth(config) {
@@ -111,7 +109,7 @@ class RedditClient {
                 "User-Agent": user_agent,
                 ...config.headers
             }
-        })
+        });
     }
 }
 
@@ -120,6 +118,6 @@ setInterval(
         RedditClient.connect();
     },
     1000 * 60 * 5
-)
+);
 
 module.exports = RedditClient;
