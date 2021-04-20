@@ -1,0 +1,18 @@
+{
+    "root": true,
+    "env":{
+        "node": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended"
+    ],
+    "rules": {
+        "semi": "warn",
+        "no-unused-vars": "off"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module"
+    }
+}
